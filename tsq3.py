@@ -87,18 +87,11 @@ quiz_state = QuizState()
 def get_new_question(suffix_type):
     examples = suffix_examples.get(suffix_type, [])
     if not examples:
-        return [gr.update(value="")] * 3 + [gr.update(value="⚠️ Invalid suffix type")] + [gr.update(visible=False), gr.update(value="")]
+        return ["", "", "⚠️ Invalid suffix type", "", False, ""]
     
     example = random.choice(examples)
     quiz_state.question_history.append(example)
-    return [
-        gr.update(value=example[0]),  # root_word
-        gr.update(value=example[1]),  # correct_answer
-        gr.update(value=example[2]),  # explanation
-        gr.update(value=""),          # result
-        gr.update(visible=False),     # feedback_box
-        gr.update(value="")           # user_answer
-    ]
+    return [example[0], example[1], example[2], "", False, ""]
 
 def check_answer(user_input, correct, explanation):
     user_input = user_input.strip()
@@ -108,20 +101,20 @@ def check_answer(user_input, correct, explanation):
         quiz_state.correct_count += 1
         quiz_state.streak += 1
         return [
-            gr.Markdown.update(value="🎉 Correct! Well done!", visible=True),
-            gr.Textbox.update(value=explanation),
-            gr.update(value=f"📊 Correct: {quiz_state.correct_count} | Attempts: {quiz_state.total_attempts}"),
-            gr.Column.update(visible=True, variant="success"),
-            gr.Slider.update(visible=True)
+            result.update(value="🎉 Correct! Well done!", visible=True),
+            explanation.update(value=explanation),
+            stats_display.update(value=f"📊 Correct: {quiz_state.correct_count} | Attempts: {quiz_state.total_attempts}"),
+            feedback_box.update(visible=True, variant="success"),
+            progress_bar.update(visible=True)
         ]
     else:
         quiz_state.streak = 0
         return [
-            gr.Markdown.update(value=f"❌ Incorrect. Correct: {correct}", visible=True),
-            gr.Textbox.update(value=explanation),
-            gr.update(value=f"📊 Correct: {quiz_state.correct_count} | Attempts: {quiz_state.total_attempts}"),
-            gr.Column.update(visible=True, variant="danger"),
-            gr.Slider.update(visible=True)
+            result.update(value=f"❌ Incorrect. Correct: {correct}", visible=True),
+            explanation.update(value=explanation),
+            stats_display.update(value=f"📊 Correct: {quiz_state.correct_count} | Attempts: {quiz_state.total_attempts}"),
+            feedback_box.update(visible=True, variant="danger"),
+            progress_bar.update(visible=True)
         ]
 
 with gr.Blocks(title="Turkish Suffix Master", theme="soft") as demo:
