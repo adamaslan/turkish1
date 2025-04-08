@@ -74,20 +74,20 @@ def get_new_question(suffix_type):
     examples = suffix_examples.get(suffix_type, [])
     if examples:
         example = random.choice(examples)
-        return {
-            "root_word": example[0],
-            "spanish_translation": example[3],
-            "correct_answer": example[1],
-            "explanation": example[2],
-            "result": ""
-        }
-    return {
-        "root_word": "",
-        "spanish_translation": "",
-        "correct_answer": "",
-        "explanation": "",
-        "result": "Please select a valid suffix type"
-    }
+        return (
+            example[0],  # root_word
+            example[3],  # spanish_translation
+            example[1],  # correct_answer
+            example[2],  # explanation
+            ""            # result
+        )
+    return (
+        "",  # root_word
+        "",  # spanish_translation
+        "",  # correct_answer
+        "",  # explanation
+        "Please select a valid suffix type"  # result
+    )
 
 def check_answer(user_input, correct, explanation):
     user_input = user_input.strip()
