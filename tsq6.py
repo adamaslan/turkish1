@@ -113,7 +113,7 @@ with gr.Blocks(title="Turkish Suffix Quiz", theme="soft") as demo:
     with gr.Row():
         suffix_type = gr.Dropdown(
             choices=["Plural", "Past Tense", "Future", "Present Continuous", 
-                    "Conditional", "Locative", "Possessive"],
+                    "Conditional", "Locative", "Ablative", "Possessive"],  # Added "Ablative"
             label="Select Suffix Type",
             value="Plural"
         )
