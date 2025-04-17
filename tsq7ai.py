@@ -59,6 +59,16 @@ suffix_examples = {
         ("oda", "odada", "Locative case with -da", "en la habitación"),
         ("park", "parkta", "Locative case with -ta", "en el parque"),
     ],
+    "Ablative": [
+        ("ev", "evden", "Ablative case with -den (front vowel)", "de casa"),
+        ("okul", "okuldan", "Ablative case with -dan (back vowel)", "de la escuela"),
+        ("masa", "masadan", "Ablative case with -dan (back vowel)", "de la mesa"),
+        ("bahçe", "bahçeden", "Ablative case with -den (front vowel)", "del jardín"),
+        ("sokak", "sokaktan", "Ablative case with -tan (after voiceless consonant)", "de la calle"),
+        ("oda", "odadan", "Ablative case with -dan (back vowel)", "de la habitación"),
+        ("park", "parktan", "Ablative case with -tan (after voiceless consonant)", "del parque"),
+        ("kitap", "kitaptan", "Ablative case with -tan (after voiceless consonant)", "del libro"),
+    ],
     "Possessive": [
         ("kitap", "kitabım", "Possessive form with -ım", "mi libro"),
         ("araba", "arabam", "Possessive form with -m", "mi coche"),
@@ -75,11 +85,11 @@ def get_new_question(suffix_type):
     if examples:
         example = random.choice(examples)
         return (
-            example[0],  # root_word
-            example[3],  # spanish_translation
-            example[1],  # correct_answer
-            example[2],  # explanation
-            ""            # result
+            example[0],  # root_word value
+            example[3],  # spanish_translation value 
+            example[1],  # correct_answer value (state)
+            example[2],  # explanation value
+            ""           # result value
         )
     return (
         "",  # root_word
@@ -92,9 +102,9 @@ def get_new_question(suffix_type):
 def check_answer(user_input, correct, explanation):
     user_input = user_input.strip()
     if user_input == correct:
-        return "Correct! 🎉", explanation
+        return gr.update(value="Correct! 🎉"), gr.update(value=explanation)
     else:
-        return f"Incorrect ❌. Correct answer: {correct}", explanation
+        return gr.update(value=f"Incorrect ❌. Correct answer: {correct}"), gr.update(value=explanation)
 
 with gr.Blocks(title="Turkish Suffix Quiz", theme="soft") as demo:
     gr.Markdown("# 🇹🇷 Turkish Suffix Quiz")
@@ -103,7 +113,7 @@ with gr.Blocks(title="Turkish Suffix Quiz", theme="soft") as demo:
     with gr.Row():
         suffix_type = gr.Dropdown(
             choices=["Plural", "Past Tense", "Future", "Present Continuous", 
-                    "Conditional", "Locative", "Possessive"],
+                    "Conditional", "Locative", "Ablative", "Possessive"],  # Added "Ablative"
             label="Select Suffix Type",
             value="Plural"
         )
@@ -146,4 +156,4 @@ with gr.Blocks(title="Turkish Suffix Quiz", theme="soft") as demo:
         outputs=[result, explanation]
     )
 
-demo.launch()
+demo.launch(share=True)  # Added share=True for public link

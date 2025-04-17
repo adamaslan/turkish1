@@ -29,7 +29,7 @@ suffix_examples = {
         ("gel", "gelecek", "Future form with -ecek for front vowels", "vendrá"),
         ("düşün", "düşünecek", "ü → ünecek transformation", "pensará"),
         ("anla", "anlayacak", "a → aya before vowel", "entenderá"),
-        ("bul", "bulecek", "Regular future form with -ecek", "encontrará"),
+        ("bul", "bulacak", "Regular future form with -acak for back vowels", "encontrará"),
         ("iç", "içecek", "ç → çecek transformation", "beberá"),
     ],
     "Present Continuous": [
@@ -46,7 +46,7 @@ suffix_examples = {
         ("oku", "okusa", "Regular conditional form with -sa", "si lee"),
         ("gel", "gelse", "Regular conditional form with -se", "si viene"),
         ("düşün", "düşünse", "Regular conditional form with -se", "si piensa"),
-        ("anla", "anlarsa", "Regular conditional form with -sa", "si entiende"),
+        ("anla", "anlasa", "Regular conditional form with -sa", "si entiende"),
         ("bul", "bulsa", "Regular conditional form with -sa", "si encuentra"),
         ("iç", "içse", "Regular conditional form with -se", "si bebe"),
     ],
@@ -58,6 +58,16 @@ suffix_examples = {
         ("sokak", "sokakta", "Locative case with -ta", "en la calle"),
         ("oda", "odada", "Locative case with -da", "en la habitación"),
         ("park", "parkta", "Locative case with -ta", "en el parque"),
+    ],
+    "Ablative": [
+        ("ev", "evden", "Ablative case with -den (front vowel)", "de casa"),
+        ("okul", "okuldan", "Ablative case with -dan (back vowel)", "de la escuela"),
+        ("masa", "masadan", "Ablative case with -dan (back vowel)", "de la mesa"),
+        ("bahçe", "bahçeden", "Ablative case with -den (front vowel)", "del jardín"),
+        ("sokak", "sokaktan", "Ablative case with -tan (after voiceless consonant)", "de la calle"),
+        ("oda", "odadan", "Ablative case with -dan (back vowel)", "de la habitación"),
+        ("park", "parktan", "Ablative case with -tan (after voiceless consonant)", "del parque"),
+        ("kitap", "kitaptan", "Ablative case with -tan (after voiceless consonant)", "del libro"),
     ],
     "Possessive": [
         ("kitap", "kitabım", "Possessive form with -ım", "mi libro"),
@@ -72,21 +82,16 @@ suffix_examples = {
 
 def get_new_question(suffix_type):
     examples = suffix_examples.get(suffix_type, [])
-    if examples:
-        example = random.choice(examples)
-        return (
-            example[0],  # root_word
-            example[3],  # spanish_translation
-            example[1],  # correct_answer
-            example[2],  # explanation
-            ""            # result
-        )
+    if not examples:
+        return "", "", "", "Please select a valid suffix type", ""
+    
+    example = random.choice(examples)
     return (
-        "",  # root_word
-        "",  # spanish_translation
-        "",  # correct_answer
-        "",  # explanation
-        "Please select a valid suffix type"  # result
+        example[0],  # root_word
+        example[3],  # spanish_translation
+        example[1],  # correct_answer
+        "",  # Clear explanation
+        ""  # Clear result
     )
 
 def check_answer(user_input, correct, explanation):
@@ -103,7 +108,7 @@ with gr.Blocks(title="Turkish Suffix Quiz", theme="soft") as demo:
     with gr.Row():
         suffix_type = gr.Dropdown(
             choices=["Plural", "Past Tense", "Future", "Present Continuous", 
-                    "Conditional", "Locative", "Possessive"],
+                    "Conditional", "Locative", "Ablative", "Possessive"],
             label="Select Suffix Type",
             value="Plural"
         )
@@ -145,5 +150,11 @@ with gr.Blocks(title="Turkish Suffix Quiz", theme="soft") as demo:
         inputs=[user_answer, correct_answer, explanation],
         outputs=[result, explanation]
     )
+    
+    demo.load(
+        get_new_question,
+        inputs=[suffix_type],
+        outputs=[root_word, spanish_translation, correct_answer, explanation, result]
+    )
 
-demo.launch()
+demo.launch(share=True)
